@@ -1,0 +1,26 @@
+{
+  "name": "classroom-status",
+  "version": "0.1.0",
+  "description": "Check if students are understanding explanations ",
+  "main": "index.js",
+  "scripts": {
+    "start": "echo 'TO-DO: run server and client'",
+    "server": "echo 'TO-DO: run the server'",
+    "client": "node client/http-server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlvaroMaceda/classroom-status.git"
+  },
+  "author": "Alvaro Maceda",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/AlvaroMaceda/classroom-status/issues"
+  },
+  "homepage": "https://github.com/AlvaroMaceda/classroom-status#readme",
+  "dependencies": {
+    "connect": "^3.6.6",
+    "serve-static": "^1.13.2"
+  }
+}
