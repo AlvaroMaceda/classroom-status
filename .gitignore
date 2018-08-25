@@ -1,7 +1,7 @@
 
 /.idea/
 /temp/
-/node_modules/
+node_modules/
 
 ### Node ###
 # Logs

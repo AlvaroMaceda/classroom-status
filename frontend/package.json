@@ -1,0 +1,27 @@
+{
+  "name": "classroom-status-client",
+  "version": "0.1.0",
+  "description": "Check if students are understanding explanations. Students and teacher frontend.",
+  "main": "http-server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node http-server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/AlvaroMaceda/classroom-status.git"
+  },
+  "author": "Alvaro Maceda",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/AlvaroMaceda/classroom-status/issues"
+  },
+  "homepage": "https://github.com/AlvaroMaceda/classroom-status#readme",
+  "dependencies": {
+    "connect": "^3.6.6",
+    "serve-static": "^1.13.2"
+  }
+}
