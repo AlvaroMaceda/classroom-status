@@ -44,15 +44,16 @@ describe('ClassroomStatus', function () {
 
     });
 
-    xit('should not be posible to change it', function () {
+    it('should not be posible to change it', function () {
 
-        const FOLLOWING = 12;
-        const LOST = 2;
-        const UNKNOW = 355;
+        const SOMETHING = 12;
+        const ANOTHER_VALUE = 22;
 
-        let status = new StatusBuilder().following(FOLLOWING).lost(LOST).unknown(UNKNOW).build();
-        status.following = 7;
-        // Esto tendría que dar un error
+        let status = new StatusBuilder().following(SOMETHING).lost(SOMETHING).unknown(SOMETHING).build();
+
+        expect(() => status.following = ANOTHER_VALUE).to.throw();
+        expect(() => status.lost = ANOTHER_VALUE).to.throw();
+        expect(() => status.unknown = ANOTHER_VALUE).to.throw();
     });
 
 });
