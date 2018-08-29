@@ -1,8 +1,9 @@
 const { expect } = require('chai');
 
-const ClassroomStatus = require('../src/classroom');
+const Classroom = require('../src/classroom');
+const StatusBuilder = require('../src/classroom_status');
 
-describe("ClassroomStatus", function() {
+describe("Classroom", function() {
 
     const CLIENT_ID_1 = 'foo';
     const CLIENT_ID_2 = 'bar';
@@ -12,13 +13,13 @@ describe("ClassroomStatus", function() {
     let cs;
 
     beforeEach(function () {
-        this.cs = new ClassroomStatus();
+        this.cs = new Classroom();
     });
 
     describe('Clients list', function () {
 
         it('should keep a count of connected clients', function () {
-            let cs = new ClassroomStatus();
+            let cs = new Classroom();
 
             cs.connect(CLIENT_ID_1);
             expect(cs.count()).to.equal(1);
@@ -29,7 +30,7 @@ describe("ClassroomStatus", function() {
         });
 
         it('should not connect a client twice', function () {
-            let cs = new ClassroomStatus();
+            let cs = new Classroom();
 
             cs.connect(CLIENT_ID_1);
             cs.connect(CLIENT_ID_2);
@@ -40,7 +41,7 @@ describe("ClassroomStatus", function() {
             expect(cs.count()).to.equal(3);
         });
         it('should disconnect a client', function () {
-            let cs = new ClassroomStatus();
+            let cs = new Classroom();
 
             cs.connect(CLIENT_ID_1);
             cs.connect(CLIENT_ID_2);
@@ -49,7 +50,7 @@ describe("ClassroomStatus", function() {
         });
 
         it('should not faild if a non-existing client disconnects', function () {
-            let cs = new ClassroomStatus();
+            let cs = new Classroom();
 
             cs.connect(CLIENT_ID_1);
             cs.connect(CLIENT_ID_2);
@@ -62,17 +63,13 @@ describe("ClassroomStatus", function() {
     describe('Understanding status', function () {
 
         beforeEach(function () {
-            this.cs = new ClassroomStatus();
+            this.cs = new Classroom();
         });
 
-        xit('should return a default status', function () {
-            const ALL_ZEROES_STATUS = {
-                unknown: 0,
-                follow: 0,
-                lost: 0
-            };
+        it('should return a default status', function () {
+            const ALL_ZEROES_STATUS = new StatusBuilder().following(0).lost(0).unknown(0).build();
 
-            expect(this.cs.status).to.equal(ALL_ZEROES_STATUS );
+            expect(this.cs.status()).to.deep.equal(ALL_ZEROES_STATUS );
         });
 
         xit('should change status when clients indicates it', function () {
