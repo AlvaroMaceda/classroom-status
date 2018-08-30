@@ -1,60 +1,34 @@
-const StatusBuilder = require('../src/classroom_status');
 
-const _clients = Symbol('clients');
+const Students = require('./students');
+const Student = require('./student');
 
-const FOLLOWING = Symbol('Following');
-const LOST = Symbol('Lost');
-const UNKNOWN = Symbol('Unknown');
-
-function generateStatusFromClients(clients) {
-
-    let count = {
-        following: 0,
-        lost: 0,
-        unknown: 0
-    };
-
-    clients.forEach((client) => {
-        switch (client.status) {
-            case FOLLOWING:
-                break;
-            case LOST:
-                break;
-            case UNKNOWN:
-                break;
-        }
-
-    });
-
-    return new StatusBuilder()
-        .following(count.following)
-        .lost(count.lost)
-        .unknown(count.unknown)
-        .build();
-}
+const _students = Symbol('_students');
 
 class Classroom {
 
     constructor(){
-        this[_clients] = new Map();
+        this[_students] = new Students();
     }
 
-    connect(id) {
-        this[_clients].set(id,{});
+    connect(student) {
+        this[_students].add(student);
     }
 
-    disconnect(id) {
-        this[_clients].delete(id);
+    disconnect(student) {
+        this[_students].remove(student);
     }
 
     count() {
-        return this[_clients].size;
+        return this[_students].count();
     }
 
-    status(){
-        return generateStatusFromClients(this[_clients]);
+    getStatus(){
+        return this[_students].getStatus();
     }
 
+    isFollowing() {
+
+    }
 
 
 }

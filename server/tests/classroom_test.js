@@ -60,47 +60,53 @@ describe("Classroom", function() {
 
     });
 
-    describe('Understanding status', function () {
+    describe('Students getStatus', function () {
 
         beforeEach(function () {
             this.cs = new Classroom();
+            let clients = [
+                CLIENT_ID_1,
+                CLIENT_ID_2,
+                CLIENT_ID_3
+            ];
+            clients.forEach( (client) => this.cs.connect(client) );
         });
 
-        it('should return a default status', function () {
+        it('should return a default getStatus', function () {
             const ALL_ZEROES_STATUS = new StatusBuilder().following(0).lost(0).unknown(0).build();
 
-            expect(this.cs.status()).to.deep.equal(ALL_ZEROES_STATUS );
+            expect(new Classroom().getStatus()).to.deep.equal(ALL_ZEROES_STATUS );
         });
 
-        xit('should change status when clients indicates it', function () {
+        xit('should change getStatus when clients indicates it', function () {
             this.cs.isFollowing(CLIENT_ID_2);
-            expect(this.css.status).to.equal({unknown:2,follow:1,lost:0});
+            expect(this.cs.getStatus()).to.equal({unknown:2,follow:1,lost:0});
 
             this.cs.isFollowing(CLIENT_ID_3);
-            expect(this.css.status).to.equal({unknown:1,follow:2,lost:0});
+            expect(this.cs.getStatus()).to.equal({unknown:1,follow:2,lost:0});
 
             this.cs.hasLost(CLIENT_ID_3);
-            expect(this.css.status).to.equal({unknown:1,follow:1,lost:1});
+            expect(this.cs.getStatus()).to.equal({unknown:1,follow:1,lost:1});
 
             this.cs.hasLost(CLIENT_ID_1);
-            expect(this.css.status).to.equal({unknown:0,follow:1,lost:2});
+            expect(this.cs.getStatus()).to.equal({unknown:0,follow:1,lost:2});
         });
 
-        xit('should keep the last status of a client', function () {
+        xit('should keep the last getStatus of a client', function () {
             this.cs.hasLost(CLIENT_ID_1);
             this.cs.hasLost(CLIENT_ID_1);
-            expect(this.css.status).to.equal({unknown:2,follow:0,lost:1});
+            expect(this.cs.getStatus()).to.equal({unknown:2,follow:0,lost:1});
 
             this.cs.hasLost(CLIENT_ID_1);
             this.cs.isFollowing(CLIENT_ID_1);
-            expect(this.css.status).to.equal({unknown:2,follow:1,lost:0});
+            expect(this.cs.getStatus()).to.equal({unknown:2,follow:1,lost:0});
         });
 
-        xit('should change status when a client connects', function () {
+        xit('should change getStatus when a client connects', function () {
 
         });
 
-        xit('should change status when a client disconnects', function () {
+        xit('should change getStatus when a client disconnects', function () {
             
         });
 
