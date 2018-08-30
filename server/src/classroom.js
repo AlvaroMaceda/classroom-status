@@ -1,6 +1,5 @@
-
 const Students = require('./students');
-const Student = require('./student');
+const STUDENT_STATE = require('./student_state');
 
 const _students = Symbol('_students');
 
@@ -10,24 +9,28 @@ class Classroom {
         this[_students] = new Students();
     }
 
-    connect(student) {
-        this[_students].add(student);
+    connect(studentId) {
+        this[_students].add(studentId);
     }
 
-    disconnect(student) {
-        this[_students].remove(student);
+    disconnect(studentId) {
+        this[_students].remove(studentId);
     }
 
     count() {
         return this[_students].count();
     }
 
-    getStatus(){
-        return this[_students].getStatus();
+    getState(){
+        return this[_students].getState();
     }
 
-    isFollowing() {
+    isFollowing(studentId) {
+        this[_students].get(studentId).state = STUDENT_STATE.FOLLOWING;
+    }
 
+    hasLost(studentId) {
+        this[_students].get(studentId).state = STUDENT_STATE.LOST;
     }
 
 

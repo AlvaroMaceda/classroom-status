@@ -1,36 +1,22 @@
-const StatusBuilder = require('./classroom_status');
+const STUDENT_STATE = require('./student_state');
+const Student = require('./student');
 
-const FOLLOWING = Symbol('Following');
-const LOST = Symbol('Lost');
-const UNKNOWN = Symbol('Unknown');
+function coalesce(...args) {
+    return args.find( (item) => item !== null && item !== undefined);
+}
 
 function generateStatusFromStudents(students) {
 
-    let count = {
-        following: 0,
-        lost: 0,
-        unknown: 0
-    };
+    let count = {};
+    for (const prop in STUDENT_STATE) {
+        count[STUDENT_STATE[prop]] = 0;
+    }
 
     students.forEach((student) => {
-        switch (student.getStatus) {
-            case FOLLOWING:
-                count.following++;
-                break;
-            case LOST:
-                count.lost++;
-                break;
-            case UNKNOWN:
-                count.unknown++;
-                break;
-        }
+        count[student.state]++
     });
 
-    return (new StatusBuilder())
-        .following(count.following)
-        .lost(count.lost)
-        .unknown(count.unknown)
-        .build();
+    return count;
 }
 
 const _students = Symbol('_students');
@@ -41,8 +27,8 @@ class Students {
         this[_students] = new Map();
     }
 
-    add(student) {
-        this[_students].set(student,{});
+    add(studentId) {
+        this[_students].set(studentId,new Student(studentId,STUDENT_STATE.UNKNOWN));
     }
 
     remove(student) {
@@ -53,7 +39,11 @@ class Students {
         return this[_students].size;
     }
 
-    getStatus(){
+    get(studentId) {
+        return this[_students].get(studentId);
+    }
+
+    getState(){
         return generateStatusFromStudents(this[_students]);
     }
 

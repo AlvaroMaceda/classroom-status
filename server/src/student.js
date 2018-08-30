@@ -1,11 +1,21 @@
-const status = require ('./student_status');
+const STUDENT_STATE = require ('./student_state');
 
-const _status = Symbol('_status');
+const _id = Symbol('_id');
+const _state = Symbol('_state');
 
 class Student {
 
-    constructor(status = status.UNKNOWN) {
-        this[_status] = status;
+    constructor(id, state = STUDENT_STATE.UNKNOWN) {
+        this[_id] = id;
+        this[_state] = state;
+    }
+
+    get state() {
+        return this[_state];
+    }
+
+    set state(state) {
+        this[_state] = state;
     }
 
 }

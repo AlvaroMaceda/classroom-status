@@ -1,14 +1,13 @@
 const { expect } = require('chai');
 
 const Classroom = require('../src/classroom');
-const StatusBuilder = require('../src/classroom_status');
+const STUDENT_STATE = require('../src/student_state');
 
 describe("Classroom", function() {
 
     const CLIENT_ID_1 = 'foo';
     const CLIENT_ID_2 = 'bar';
     const CLIENT_ID_3 = 'tee';
-
 
     let cs;
 
@@ -60,7 +59,7 @@ describe("Classroom", function() {
 
     });
 
-    describe('Students getStatus', function () {
+    describe('Students status', function () {
 
         beforeEach(function () {
             this.cs = new Classroom();
@@ -72,34 +71,59 @@ describe("Classroom", function() {
             clients.forEach( (client) => this.cs.connect(client) );
         });
 
-        it('should return a default getStatus', function () {
-            const ALL_ZEROES_STATUS = new StatusBuilder().following(0).lost(0).unknown(0).build();
+        it('should return a default status', function () {
+            let all_zeroes_status = {};
+            for (const prop in STUDENT_STATE) {
+                all_zeroes_status[STUDENT_STATE[prop]] = 0;
+            }
 
-            expect(new Classroom().getStatus()).to.deep.equal(ALL_ZEROES_STATUS );
+            expect(new Classroom().getState()).to.deep.equal(all_zeroes_status );
         });
 
-        xit('should change getStatus when clients indicates it', function () {
+        it('should change status when clients indicates it', function () {
+            let expected;
+
             this.cs.isFollowing(CLIENT_ID_2);
-            expect(this.cs.getStatus()).to.equal({unknown:2,follow:1,lost:0});
+            expected = {
+                [STUDENT_STATE.FOLLOWING]: 1,
+                [STUDENT_STATE.LOST]: 0,
+                [STUDENT_STATE.UNKNOWN]: 2
+            };
+            expect(this.cs.getState()).to.deep.equal(expected);
 
             this.cs.isFollowing(CLIENT_ID_3);
-            expect(this.cs.getStatus()).to.equal({unknown:1,follow:2,lost:0});
+            expected = {
+                [STUDENT_STATE.FOLLOWING]: 2,
+                [STUDENT_STATE.LOST]: 0,
+                [STUDENT_STATE.UNKNOWN]: 1
+            };
+            expect(this.cs.getState()).to.deep.equal(expected);
 
             this.cs.hasLost(CLIENT_ID_3);
-            expect(this.cs.getStatus()).to.equal({unknown:1,follow:1,lost:1});
+            expected = {
+                [STUDENT_STATE.FOLLOWING]: 1,
+                [STUDENT_STATE.LOST]: 1,
+                [STUDENT_STATE.UNKNOWN]: 1
+            };
+            expect(this.cs.getState()).to.deep.equal(expected);
 
             this.cs.hasLost(CLIENT_ID_1);
-            expect(this.cs.getStatus()).to.equal({unknown:0,follow:1,lost:2});
+            expected = {
+                [STUDENT_STATE.FOLLOWING]: 1,
+                [STUDENT_STATE.LOST]: 2,
+                [STUDENT_STATE.UNKNOWN]: 0
+            };
+            expect(this.cs.getState()).to.deep.equal(expected);
         });
 
         xit('should keep the last getStatus of a client', function () {
             this.cs.hasLost(CLIENT_ID_1);
             this.cs.hasLost(CLIENT_ID_1);
-            expect(this.cs.getStatus()).to.equal({unknown:2,follow:0,lost:1});
+            expect(this.cs.getState()).to.equal({unknown:2,follow:0,lost:1});
 
             this.cs.hasLost(CLIENT_ID_1);
             this.cs.isFollowing(CLIENT_ID_1);
-            expect(this.cs.getStatus()).to.equal({unknown:2,follow:1,lost:0});
+            expect(this.cs.getState()).to.equal({unknown:2,follow:1,lost:0});
         });
 
         xit('should change getStatus when a client connects', function () {
