@@ -8,6 +8,7 @@ describe("Classroom", function() {
     const CLIENT_ID_1 = 'foo';
     const CLIENT_ID_2 = 'bar';
     const CLIENT_ID_3 = 'tee';
+    const CLIENT_ID_4 = 'goo';
 
     let cs;
 
@@ -116,22 +117,56 @@ describe("Classroom", function() {
             expect(this.cs.getState()).to.deep.equal(expected);
         });
 
-        xit('should keep the last getStatus of a client', function () {
+        it('should keep the last getStatus of a client', function () {
+            let expected;
+
             this.cs.hasLost(CLIENT_ID_1);
             this.cs.hasLost(CLIENT_ID_1);
-            expect(this.cs.getState()).to.equal({unknown:2,follow:0,lost:1});
+            expected = {
+                [STUDENT_STATE.FOLLOWING]: 0,
+                [STUDENT_STATE.LOST]: 1,
+                [STUDENT_STATE.UNKNOWN]: 2
+            };
+            expect(this.cs.getState()).to.deep.equal(expected);
 
             this.cs.hasLost(CLIENT_ID_1);
             this.cs.isFollowing(CLIENT_ID_1);
-            expect(this.cs.getState()).to.equal({unknown:2,follow:1,lost:0});
+            expected = {
+                [STUDENT_STATE.FOLLOWING]: 1,
+                [STUDENT_STATE.LOST]: 0,
+                [STUDENT_STATE.UNKNOWN]: 2
+            };
+            expect(this.cs.getState()).to.deep.equal(expected);
         });
 
-        xit('should change getStatus when a client connects', function () {
+        it('should change getStatus when a client connects', function () {
+
+            this.cs.connect(CLIENT_ID_4);
+
+            let expected = {
+                [STUDENT_STATE.FOLLOWING]: 0,
+                [STUDENT_STATE.LOST]: 0,
+                [STUDENT_STATE.UNKNOWN]: 4
+            };
+            expect(this.cs.getState()).to.deep.equal(expected);
 
         });
 
-        xit('should change getStatus when a client disconnects', function () {
-            
+        it('should change getStatus when a client disconnects', function () {
+
+            this.cs.hasLost(CLIENT_ID_1);
+            this.cs.hasLost(CLIENT_ID_2);
+            this.cs.isFollowing(CLIENT_ID_3);
+
+            this.cs.disconnect(CLIENT_ID_3);
+
+            let expected = {
+                [STUDENT_STATE.FOLLOWING]: 0,
+                [STUDENT_STATE.LOST]: 2,
+                [STUDENT_STATE.UNKNOWN]: 0
+            };
+            expect(this.cs.getState()).to.deep.equal(expected);
+
         });
 
     });
