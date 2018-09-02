@@ -171,4 +171,20 @@ describe("Classroom", function() {
 
     });
 
+    describe('Stream of notifications', function () {
+
+        xit('should notify a default value to new subscribers', function () {
+            
+        });
+
+        xit('should notify when a students follows or get lost', function () {
+            
+        });
+
+        xit('should not notify when the status is the same as before', function () {
+            
+        });
+
+    });
+    
 });
