@@ -1,6 +1,17 @@
 const Students = require('./students');
 const STUDENT_STATE = require('./student_state');
 
+/*
+const mySubject = new Rx.Subject();
+const myObs = mySubject.asObservable();
+
+
+http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html#instance-method-distinctUntilChanged
+
+.distinctUntilChanged((p: Person, q: Person) => p.name === q.name)
+http://reactivex.io/rxjs/manual/overview.html#behaviorsubject
+ */
+
 const _students = Symbol('_students');
 
 class Classroom {

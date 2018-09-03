@@ -1,7 +1,18 @@
-const { expect } = require('chai');
+const { expect, use } = require('chai');
+const sinon = require('sinon');
+const sinonChai = require("sinon-chai");
+use(sinonChai);
 
 const Classroom = require('../src/classroom');
 const STUDENT_STATE = require('../src/student_state');
+
+function createDefaultStatus() {
+    let all_zeroes_status = {};
+    for (const prop in STUDENT_STATE) {
+        all_zeroes_status[STUDENT_STATE[prop]] = 0;
+    }
+    return all_zeroes_status;
+}
 
 describe("Classroom", function() {
 
@@ -49,7 +60,7 @@ describe("Classroom", function() {
             expect(cs.count()).to.equal(1);
         });
 
-        it('should not faild if a non-existing client disconnects', function () {
+        it('should not fail if a non-existing client disconnects', function () {
             let cs = new Classroom();
 
             cs.connect(CLIENT_ID_1);
@@ -73,12 +84,9 @@ describe("Classroom", function() {
         });
 
         it('should return a default status', function () {
-            let all_zeroes_status = {};
-            for (const prop in STUDENT_STATE) {
-                all_zeroes_status[STUDENT_STATE[prop]] = 0;
-            }
+            let defaultStatus = createDefaultStatus();
 
-            expect(new Classroom().getState()).to.deep.equal(all_zeroes_status );
+            expect(new Classroom().getState()).to.deep.equal(defaultStatus);
         });
 
         it('should change status when clients indicates it', function () {
@@ -117,7 +125,7 @@ describe("Classroom", function() {
             expect(this.cs.getState()).to.deep.equal(expected);
         });
 
-        it('should keep the last getStatus of a client', function () {
+        it('should keep the last status of a client', function () {
             let expected;
 
             this.cs.hasLost(CLIENT_ID_1);
@@ -139,7 +147,7 @@ describe("Classroom", function() {
             expect(this.cs.getState()).to.deep.equal(expected);
         });
 
-        it('should change getStatus when a client connects', function () {
+        it('should change status when a client connects', function () {
 
             this.cs.connect(CLIENT_ID_4);
 
@@ -152,7 +160,7 @@ describe("Classroom", function() {
 
         });
 
-        it('should change getStatus when a client disconnects', function () {
+        it('should change status when a client disconnects', function () {
 
             this.cs.hasLost(CLIENT_ID_1);
             this.cs.hasLost(CLIENT_ID_2);
@@ -174,11 +182,17 @@ describe("Classroom", function() {
     describe('Stream of notifications', function () {
 
         xit('should notify a default value to new subscribers', function () {
-            
+            let cs = new Classroom();
+            let defaultStatus = createDefaultStatus();
+
+            let next =  sinon.spy();
+            cs.getStatusStream.subscribe(next);
+
+            expect(next).to.have.been.calledWith(defaultStatus);
         });
 
         xit('should notify when a students follows or get lost', function () {
-            
+            cs.connect(CLIENT_ID_1);
         });
 
         xit('should not notify when the status is the same as before', function () {
