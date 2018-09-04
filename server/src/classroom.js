@@ -6,9 +6,8 @@ const STUDENT_STATE = require('./student_state');
 
 /*
 http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html#instance-method-distinctUntilChanged
-
 .distinctUntilChanged((p: Person, q: Person) => p.name === q.name)
-http://reactivex.io/rxjs/manual/overview.html#behaviorsubject
+
  */
 
 const _students = Symbol('_students');
@@ -51,10 +50,12 @@ class Classroom {
 
     isFollowing(studentId) {
         this[_students].get(studentId).state = STUDENT_STATE.FOLLOWING;
+        this[_notify]();
     }
 
     hasLost(studentId) {
         this[_students].get(studentId).state = STUDENT_STATE.LOST;
+        this[_notify]();
     }
 
     getStatusStream() {

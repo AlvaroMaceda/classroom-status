@@ -6,6 +6,10 @@ use(sinonChai);
 const Classroom = require('../src/classroom');
 const STUDENT_STATE = require('../src/student_state');
 
+const FOLLOWING = STUDENT_STATE.FOLLOWING;
+const LOST = STUDENT_STATE.LOST;
+const UNKNOWN = STUDENT_STATE.UNKNOWN;
+
 function createDefaultStatus() {
     let all_zeroes_status = {};
     for (const prop in STUDENT_STATE) {
@@ -94,33 +98,33 @@ describe("Classroom", function() {
 
             this.cs.isFollowing(CLIENT_ID_2);
             expected = {
-                [STUDENT_STATE.FOLLOWING]: 1,
-                [STUDENT_STATE.LOST]: 0,
-                [STUDENT_STATE.UNKNOWN]: 2
+                FOLLOWING: 1,
+                LOST: 0,
+                UNKNOWN: 2
             };
             expect(this.cs.getState()).to.deep.equal(expected);
 
             this.cs.isFollowing(CLIENT_ID_3);
             expected = {
-                [STUDENT_STATE.FOLLOWING]: 2,
-                [STUDENT_STATE.LOST]: 0,
-                [STUDENT_STATE.UNKNOWN]: 1
+                FOLLOWING: 2,
+                LOST: 0,
+                UNKNOWN: 1
             };
             expect(this.cs.getState()).to.deep.equal(expected);
 
             this.cs.hasLost(CLIENT_ID_3);
             expected = {
-                [STUDENT_STATE.FOLLOWING]: 1,
-                [STUDENT_STATE.LOST]: 1,
-                [STUDENT_STATE.UNKNOWN]: 1
+                FOLLOWING: 1,
+                LOST: 1,
+                UNKNOWN: 1
             };
             expect(this.cs.getState()).to.deep.equal(expected);
 
             this.cs.hasLost(CLIENT_ID_1);
             expected = {
-                [STUDENT_STATE.FOLLOWING]: 1,
-                [STUDENT_STATE.LOST]: 2,
-                [STUDENT_STATE.UNKNOWN]: 0
+                FOLLOWING: 1,
+                LOST: 2,
+                UNKNOWN: 0
             };
             expect(this.cs.getState()).to.deep.equal(expected);
         });
@@ -131,18 +135,18 @@ describe("Classroom", function() {
             this.cs.hasLost(CLIENT_ID_1);
             this.cs.hasLost(CLIENT_ID_1);
             expected = {
-                [STUDENT_STATE.FOLLOWING]: 0,
-                [STUDENT_STATE.LOST]: 1,
-                [STUDENT_STATE.UNKNOWN]: 2
+                FOLLOWING: 0,
+                LOST: 1,
+                UNKNOWN: 2
             };
             expect(this.cs.getState()).to.deep.equal(expected);
 
             this.cs.hasLost(CLIENT_ID_1);
             this.cs.isFollowing(CLIENT_ID_1);
             expected = {
-                [STUDENT_STATE.FOLLOWING]: 1,
-                [STUDENT_STATE.LOST]: 0,
-                [STUDENT_STATE.UNKNOWN]: 2
+                FOLLOWING: 1,
+                LOST: 0,
+                UNKNOWN: 2
             };
             expect(this.cs.getState()).to.deep.equal(expected);
         });
@@ -152,9 +156,9 @@ describe("Classroom", function() {
             this.cs.connect(CLIENT_ID_4);
 
             let expected = {
-                [STUDENT_STATE.FOLLOWING]: 0,
-                [STUDENT_STATE.LOST]: 0,
-                [STUDENT_STATE.UNKNOWN]: 4
+                FOLLOWING: 0,
+                LOST: 0,
+                UNKNOWN: 4
             };
             expect(this.cs.getState()).to.deep.equal(expected);
 
@@ -169,9 +173,9 @@ describe("Classroom", function() {
             this.cs.disconnect(CLIENT_ID_3);
 
             let expected = {
-                [STUDENT_STATE.FOLLOWING]: 0,
-                [STUDENT_STATE.LOST]: 2,
-                [STUDENT_STATE.UNKNOWN]: 0
+                FOLLOWING: 0,
+                LOST: 2,
+                UNKNOWN: 0
             };
             expect(this.cs.getState()).to.deep.equal(expected);
 
@@ -185,34 +189,55 @@ describe("Classroom", function() {
             let cs = new Classroom();
             let defaultStatus = createDefaultStatus();
 
-            let next =  sinon.spy();
-            cs.getStatusStream().subscribe(next);
+            let callback =  sinon.spy();
+            cs.getStatusStream().subscribe(callback);
 
-            let anotherNext =  sinon.spy();
-            cs.getStatusStream().subscribe(anotherNext);
+            let anotherCallback =  sinon.spy();
+            cs.getStatusStream().subscribe(anotherCallback);
 
-            expect(next).to.have.been.calledWith(defaultStatus);
-            expect(anotherNext).to.have.been.calledWith(defaultStatus);
+            expect(callback).to.have.been.calledWith(defaultStatus);
+            expect(anotherCallback).to.have.been.calledWith(defaultStatus);
         });
 
         it('should notify when a client connects', function () {
             let cs = new Classroom();
-            let defaultStatus = createDefaultStatus();
             let expected = {
-                [STUDENT_STATE.FOLLOWING]: 0,
-                [STUDENT_STATE.LOST]: 0,
-                [STUDENT_STATE.UNKNOWN]: 1
+                FOLLOWING: 0,
+                LOST: 0,
+                UNKNOWN: 1
             };
-            let next = sinon.spy();
+            let callback = sinon.spy();
 
-            cs.getStatusStream().subscribe(next);
-            expect(next).to.have.been.calledWith(defaultStatus);
-
+            cs.getStatusStream().subscribe(callback);
             cs.connect(CLIENT_ID_1);
-            expect(next).to.have.been.calledWith(expected);
+            expect(callback).to.have.been.calledWith(expected);
         });
 
-        xit('should notify when a students follows or get lost', function () {
+        it('should notify when a students follows or get lost', function () {
+            let expected;
+            let cs = new Classroom();
+            let callback = sinon.spy();
+            cs.getStatusStream().subscribe(callback);
+
+            cs.connect(CLIENT_ID_1);
+            cs.connect(CLIENT_ID_2);
+            cs.connect(CLIENT_ID_3);
+
+            expected = {
+                FOLLOWING: 1,
+                LOST: 0,
+                UNKNOWN: 2
+            };
+            cs.isFollowing(CLIENT_ID_1);
+            expect(callback).to.have.been.calledWith(expected);
+
+            expected = {
+                FOLLOWING: 0,
+                LOST: 1,
+                UNKNOWN: 2
+            };
+            cs.hasLost(CLIENT_ID_1);
+            expect(callback).to.have.been.calledWith(expected);
 
         });
 
