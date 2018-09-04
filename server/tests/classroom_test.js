@@ -181,18 +181,39 @@ describe("Classroom", function() {
 
     describe('Stream of notifications', function () {
 
-        xit('should notify a default value to new subscribers', function () {
+        it('should notify a default value to new subscribers', function () {
             let cs = new Classroom();
             let defaultStatus = createDefaultStatus();
 
             let next =  sinon.spy();
-            cs.getStatusStream.subscribe(next);
+            cs.getStatusStream().subscribe(next);
+
+            let anotherNext =  sinon.spy();
+            cs.getStatusStream().subscribe(anotherNext);
 
             expect(next).to.have.been.calledWith(defaultStatus);
+            expect(anotherNext).to.have.been.calledWith(defaultStatus);
+        });
+
+        it('should notify when a client connects', function () {
+            let cs = new Classroom();
+            let defaultStatus = createDefaultStatus();
+            let expected = {
+                [STUDENT_STATE.FOLLOWING]: 0,
+                [STUDENT_STATE.LOST]: 0,
+                [STUDENT_STATE.UNKNOWN]: 1
+            };
+            let next = sinon.spy();
+
+            cs.getStatusStream().subscribe(next);
+            expect(next).to.have.been.calledWith(defaultStatus);
+
+            cs.connect(CLIENT_ID_1);
+            expect(next).to.have.been.calledWith(expected);
         });
 
         xit('should notify when a students follows or get lost', function () {
-            cs.connect(CLIENT_ID_1);
+
         });
 
         xit('should not notify when the status is the same as before', function () {

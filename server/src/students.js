@@ -5,12 +5,16 @@ function coalesce(...args) {
     return args.find( (item) => item !== null && item !== undefined);
 }
 
-function generateStatusFromStudents(students) {
-
+function zeroCountHash() {
     let count = {};
     for (const prop in STUDENT_STATE) {
         count[STUDENT_STATE[prop]] = 0;
     }
+    return count;
+}
+
+function generateStatusFromStudents(students) {
+    let count = zeroCountHash();
 
     students.forEach((student) => {
         count[student.state]++
