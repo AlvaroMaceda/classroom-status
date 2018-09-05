@@ -23,7 +23,8 @@
   "homepage": "https://github.com/AlvaroMaceda/classroom-status#readme",
   "dependencies": {
     "rxjs": "^6.3.1",
-    "socket.io": "^2.1.1"
+    "socket.io": "^2.1.1",
+    "value-object": "^0.4.1"
   },
   "devDependencies": {
     "chai": "^4.1.2",

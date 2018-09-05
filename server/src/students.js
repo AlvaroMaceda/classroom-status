@@ -1,4 +1,4 @@
-const STUDENT_STATE = require('./student_state');
+const STUDENT_STATE = require('./student_states');
 const Student = require('./student');
 
 function coalesce(...args) {

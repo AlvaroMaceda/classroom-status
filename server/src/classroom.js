@@ -2,7 +2,7 @@ let { BehaviorSubject } = require('rxjs');
 let { map, filter, switchMap, debounceTime, throttleTime, distinctUntilChanged} = require('rxjs/operators');
 
 const Students = require('./students');
-const STUDENT_STATE = require('./student_state');
+const STUDENT_STATE = require('./student_states');
 
 /*
 http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html#instance-method-distinctUntilChanged
@@ -54,31 +54,33 @@ class Classroom {
         this._notify();
     }
 
-    getStatusStream() {
-        return this._statusStream || this._initializeStatusStream();
+    getStatesStream() {
+        return this._stateStream$ || this._initializeStateStream();
     }
 
     //---------------------------------------------------
     // "Private" methods
     //---------------------------------------------------
 
-    _initializeStatusSubject() {
-        this._statusSubject = new BehaviorSubject(this.getState());
-        return this._statusSubject;
+    _initializeStateSubject() {
+        this._stateSubject = new BehaviorSubject(this.getState());
+        return this._stateSubject;
     }
 
-    _getStatusSubject() {
-        return this._statusSubject || this._initializeStatusSubject();
+    _getStateSubject() {
+        return this._stateSubject || this._initializeStateSubject();
     }
 
-    _initializeStatusStream() {
-        this._statusStream = this._getStatusSubject().asObservable();
-        return this._statusStream;
+    _initializeStateStream() {
+        this._stateStream$ = this._getStateSubject()
+            .asObservable()
+            .pipe(distinctUntilChanged((previous, current) => false ));
+        return this._stateStream$;
     }
 
     _notify() {
         let state = this.getState();
-        let subject = this._getStatusSubject();
+        let subject = this._getStateSubject();
         subject.next(state);
     }
 

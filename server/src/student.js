@@ -1,4 +1,4 @@
-const STUDENT_STATE = require ('./student_state');
+const STUDENT_STATE = require ('./student_states');
 
 const _id = Symbol('_id');
 const _state = Symbol('_state');
