@@ -4,6 +4,7 @@ const sinonChai = require("sinon-chai");
 use(sinonChai);
 
 const Classroom = require('../src/classroom');
+let ClassroomState = require('../src/classroom_state');
 const STUDENT_STATE = require('../src/student_states');
 
 const FOLLOWING = STUDENT_STATE.FOLLOWING;
@@ -15,7 +16,7 @@ function createDefaultStatus() {
     for (const prop in STUDENT_STATE) {
         all_zeroes_status[STUDENT_STATE[prop]] = 0;
     }
-    return all_zeroes_status;
+    return new ClassroomState(all_zeroes_status);
 }
 
 describe("Classroom", function() {
@@ -97,35 +98,35 @@ describe("Classroom", function() {
             let expected;
 
             this.cs.isFollowing(CLIENT_ID_2);
-            expected = {
+            expected = new ClassroomState({
                 [FOLLOWING]: 1,
                 [LOST]: 0,
                 [UNKNOWN]: 2
-            };
+            });
             expect(this.cs.getState()).to.deep.equal(expected);
 
             this.cs.isFollowing(CLIENT_ID_3);
-            expected = {
+            expected = new ClassroomState({
                 [FOLLOWING]: 2,
                 [LOST]: 0,
                 [UNKNOWN]: 1
-            };
+            });
             expect(this.cs.getState()).to.deep.equal(expected);
 
             this.cs.hasLost(CLIENT_ID_3);
-            expected = {
+            expected = new ClassroomState({
                 [FOLLOWING]: 1,
                 [LOST]: 1,
                 [UNKNOWN]: 1
-            };
+            });
             expect(this.cs.getState()).to.deep.equal(expected);
 
             this.cs.hasLost(CLIENT_ID_1);
-            expected = {
+            expected = new ClassroomState({
                 [FOLLOWING]: 1,
                 [LOST]: 2,
                 [UNKNOWN]: 0
-            };
+            });
             expect(this.cs.getState()).to.deep.equal(expected);
         });
 
@@ -134,20 +135,20 @@ describe("Classroom", function() {
 
             this.cs.hasLost(CLIENT_ID_1);
             this.cs.hasLost(CLIENT_ID_1);
-            expected = {
+            expected = new ClassroomState({
                 [FOLLOWING]: 0,
                 [LOST]: 1,
                 [UNKNOWN]: 2
-            };
+            });
             expect(this.cs.getState()).to.deep.equal(expected);
 
             this.cs.hasLost(CLIENT_ID_1);
             this.cs.isFollowing(CLIENT_ID_1);
-            expected = {
+            expected = new ClassroomState({
                 [FOLLOWING]: 1,
                 [LOST]: 0,
                 [UNKNOWN]: 2
-            };
+            });
             expect(this.cs.getState()).to.deep.equal(expected);
         });
 
@@ -155,11 +156,11 @@ describe("Classroom", function() {
 
             this.cs.connect(CLIENT_ID_4);
 
-            let expected = {
+            let expected = new ClassroomState({
                 [FOLLOWING]: 0,
                 [LOST]: 0,
                 [UNKNOWN]: 4
-            };
+            });
             expect(this.cs.getState()).to.deep.equal(expected);
 
         });
@@ -172,11 +173,11 @@ describe("Classroom", function() {
 
             this.cs.disconnect(CLIENT_ID_3);
 
-            let expected = {
+            let expected = new ClassroomState({
                 [FOLLOWING]: 0,
                 [LOST]: 2,
                 [UNKNOWN]: 0
-            };
+            });
             expect(this.cs.getState()).to.deep.equal(expected);
 
         });
@@ -203,11 +204,11 @@ describe("Classroom", function() {
             let cs = new Classroom();
             let callback = sinon.spy();
 
-            let expected = {
+            let expected = new ClassroomState({
                 [FOLLOWING]: 0,
                 [LOST]: 0,
                 [UNKNOWN]: 1
-            };
+            });
 
             cs.getStatesStream().subscribe(callback);
             cs.connect(CLIENT_ID_1);
@@ -224,26 +225,25 @@ describe("Classroom", function() {
             cs.connect(CLIENT_ID_2);
             cs.connect(CLIENT_ID_3);
 
-            expected = {
+            expected = new ClassroomState({
                 [FOLLOWING]: 1,
                 [LOST]: 0,
                 [UNKNOWN]: 2
-            };
+            });
             cs.isFollowing(CLIENT_ID_1);
             expect(callback).to.have.been.calledWith(expected);
 
-            expected = {
+            expected = new ClassroomState({
                 [FOLLOWING]: 0,
                 [LOST]: 1,
                 [UNKNOWN]: 2
-            };
+            });
             cs.hasLost(CLIENT_ID_1);
             expect(callback).to.have.been.calledWith(expected);
 
         });
 
         it('should not notify when the status is the same as before', function () {
-            let expected;
             let previousCallCount;
 
             let cs = new Classroom();

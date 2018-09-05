@@ -10,16 +10,10 @@ http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html#instance-method
 
  */
 
-// I dont like this, is ugly
+function compareStates(previous, current){
+    return previous.isEqualTo(current)
+}
 
-// const _students = Symbol('_students');
-// const _statusSubject = Symbol('_statusSubject');
-// const _statusStream =Symbol('_statusStream');
-//
-// const _initializeStatusStream = Symbol('_initializeStatusStream');
-// const _initializeStatusSubject = Symbol('_initializeStatusSubject');
-// const _getStatusSubject = Symbol('_getStatusSubject');
-// const _notify = Symbol('_notify');
 
 class Classroom {
 
@@ -74,7 +68,9 @@ class Classroom {
     _initializeStateStream() {
         this._stateStream$ = this._getStateSubject()
             .asObservable()
-            .pipe(distinctUntilChanged((previous, current) => false ));
+            .pipe(distinctUntilChanged(
+                (previous, next) => previous.isEqualTo(next)
+            ));
         return this._stateStream$;
     }
 

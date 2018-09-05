@@ -1,5 +1,6 @@
 const STUDENT_STATE = require('./student_states');
 const Student = require('./student');
+let ClassroomState = require('../src/classroom_state');
 
 function coalesce(...args) {
     return args.find( (item) => item !== null && item !== undefined);
@@ -7,10 +8,11 @@ function coalesce(...args) {
 
 function zeroCountHash() {
     let count = {};
-    for (const prop in STUDENT_STATE) {
-        count[STUDENT_STATE[prop]] = 0;
+    for (const item in STUDENT_STATE) {
+        count[STUDENT_STATE[item]] = 0;
     }
     return count;
+
 }
 
 function generateStatusFromStudents(students) {
@@ -20,7 +22,7 @@ function generateStatusFromStudents(students) {
         count[student.state]++
     });
 
-    return count;
+    return new ClassroomState(count);
 }
 
 const _students = Symbol('_students');
