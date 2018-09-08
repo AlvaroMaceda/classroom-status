@@ -31,6 +31,7 @@
     "mocha": "^5.2.0",
     "nodemon": "^1.18.3",
     "sinon": "^6.1.5",
-    "sinon-chai": "^3.2.0"
+    "sinon-chai": "^3.2.0",
+    "socket-io-mock": "^1.0.1"
   }
 }
