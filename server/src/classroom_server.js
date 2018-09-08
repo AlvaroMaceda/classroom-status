@@ -1,6 +1,6 @@
 
 
-function initializeWith(io) {
+function attachTo(io) {
 
     io.on('connection', function(client){
         console.log('client connected');
@@ -13,10 +13,11 @@ function initializeWith(io) {
         //console.log(client.request);
         client.on('event', function(data){});
         client.on('disconnect', function(){});
+        client.emit('patata');
     });
 
 }
 
 module.exports = {
-    use: initializeWith
+    attachTo: attachTo
 };

@@ -1,7 +1,7 @@
 const http = require('http').createServer();
 const io = require('socket.io')(http);
 const classroomServer = require('./src/classroom_server.js');
-classroomServer.use(io);
+classroomServer.attachTo(io);
 
 const HOST='0.0.0.0';
 const PORT=3000;
