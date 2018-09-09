@@ -2,6 +2,8 @@
 
 function attachTo(io) {
 
+    //io.removeAllListeners();
+
     //https://socket.io/docs/server-api/#Socket
     io.on('connection', function(socket){
         console.log('socket connected');
