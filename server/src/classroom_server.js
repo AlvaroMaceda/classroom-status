@@ -2,18 +2,27 @@
 
 function attachTo(io) {
 
-    io.on('connection', function(client){
-        console.log('client connected');
-        //console.log(client.conn);
-        // console.log(client);
+    //https://socket.io/docs/server-api/#Socket
+    io.on('connection', function(socket){
+        console.log('socket connected');
+        //console.log(socket.conn);
+        // console.log(socket);
         // console.log('-----------------------------------------');
         // console.log('-----------------------------------------');
         // console.log('-----------------------------------------');
-        console.log(client.id);
-        //console.log(client.request);
-        client.on('event', function(data){});
-        client.on('disconnect', function(){});
-        client.emit('patata');
+        console.log(socket.id);
+        //console.log(socket.request);
+        socket.on('event', function(data){});
+
+        socket.on('disconnect', function(data){
+            console.log(`disconnect: ${data}`)
+        });
+
+        socket.on('message', function(data){
+            console.log(`message: ${data}`);
+            socket.emit('patata');
+        });
+
     });
 
 }
