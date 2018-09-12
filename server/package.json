@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
+    "event-to-promise": "^0.8.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.3",
     "sinon": "^6.1.5",

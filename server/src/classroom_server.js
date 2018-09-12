@@ -6,13 +6,13 @@ function attachTo(io) {
 
     //https://socket.io/docs/server-api/#Socket
     io.on('connection', function(socket){
-        console.log('socket connected');
+        console.log('SERVER. socket connected');
         //console.log(socket.conn);
         // console.log(socket);
         // console.log('-----------------------------------------');
         // console.log('-----------------------------------------');
         // console.log('-----------------------------------------');
-        console.log(socket.id);
+        console.log('SERVER. ' +socket.id);
         //console.log(socket.request);
         socket.on('event', function(data){});
 
@@ -21,8 +21,9 @@ function attachTo(io) {
         });
 
         socket.on('message', function(data){
-            console.log(`message: ${data}`);
-            socket.emit('patata');
+            console.log(`SERVER. message: ${data}`);
+            console.log('SERVER. Emmiting something');
+            socket.emit('message','chorizo');
         });
 
     });

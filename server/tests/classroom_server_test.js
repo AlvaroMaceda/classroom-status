@@ -1,6 +1,7 @@
 const { expect, use } = require('chai');
 const sinon = require('sinon');
 const sinonChai = require("sinon-chai");
+const eventToPromise = require('event-to-promise');
 use(sinonChai);
 
 
@@ -68,16 +69,6 @@ describe('GETTING MAD', function () {
         // });
 
         // let socket = io('http://localhost:3000');
-        socket.on('connect', function(){
-            console.log('conectado');
-        });
-        socket.on('event', function(data){
-            console.log(data);
-        });
-        socket.on('disconnect', function(){
-            console.log('desconectado');
-        });
-
 
         clients.push(socket);
         return socket;
@@ -94,15 +85,38 @@ describe('GETTING MAD', function () {
         clients.forEach((client) => {
             client.disconnect();
         });
-        //ioServer.removeAllListeners();
+        ioServer.removeAllListeners();
     });
 
 
-    it('should ', function () {
+    it('should ', function (done) {
 
 
         console.log('1');
         let c1 = connectClient();
+
+
+        let foo = eventToPromise(c1,"message");
+        foo.then((data)=>{
+            console.log(data);
+            done();
+        });
+        console.log('1.5');
+        c1.emit('message','patata');
+        console.log('1.6');
+
+        // socket.on('connect', function(){
+        //     console.log('conectado');
+        // });
+        // socket.on('event', function(data){
+        //     console.log(data);
+        // });
+        // socket.on('disconnect', function(){
+        //     console.log('desconectado');
+        // });
+
+
+
         console.log('2');
         // c1.disconnect();
 
@@ -113,7 +127,7 @@ describe('GETTING MAD', function () {
 
         // ioServer.close();
         // httpServer.close();
-        //done();
+        // done();
 
     });
 
